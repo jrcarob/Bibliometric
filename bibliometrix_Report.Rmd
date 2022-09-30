@@ -1,0 +1,308 @@
+---
+title: "Ejemplo de Análisis de Mapas Científicos con el paquete R `bibliometrix` "
+author: © J. R. Caro-Barrera (Grupo de Investigación SEJ670, Universidad de Córdoba)
+date: September 29, 2022
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    theme: lumen
+    toc: yes
+  prettydoc::html_pretty:
+    theme: hpstr
+    highlight: github
+---
+
+```{r include=FALSE}
+# Installation of some useful packages
+if(!isTRUE(require("prettydoc"))){install.packages("prettydoc")}
+if(!isTRUE(require("rio"))){install.packages("rio")}
+library(prettydoc)
+library(rio)
+```
+
+# Referencia
+
+Este trabajo está hecho con el paquete en **R** `bibliometrix` y sobre la base propuesta por Aria y Cuccurullo, adaptado y modificado para nuestra/s línea/s de investigación. 
+
+Aria, M., & Cuccurullo, C. (2017). **bibliometrix: An R-tool for comprehensive science mapping analysis**, *Journal of Informetrics*, 11(4), pp 959-9753643, (<https://www.bibliometrix.org>).
+
+# Datos Bibliográficos
+
+Los datos bibliográficos son los de la cadena de búsqueda que he hecho. De momento me he centrado en una de las líneas que cogí, la **neofilia/neofobia en el turismo**. Lógicamente se aplicaría a las otras líneas; sin embargo hay un pequeño error. La base de datos la filtré y redefiní quitando áreas que no eran de nuestro interés: zoología, biología, etc..., dado que también hay neofilia y neofobia, sobre todo ésta última, en los animales, pues bien, algún área se me ha debido colar porque he visto revistas y referencias no relacionadas con el turismo, por eso lo advierto aquí, para cuando veais alguna referencia que no os cuadra. 
+
+**Fuente de los datos**: Clarivate Analytics Web of Science (<http://apps.webofknowledge.com>)
+
+**Formato**: Bibtex
+
+**Consulta**: "Web of Science Core Collection"
+
+**Rango**: 1995-2022
+
+**Tipos de Documentos**: Todos
+
+**Fecha de la consulta**: Septiembre, 2022
+
+# Instalación del paquete, carga de los datos y conversión
+
+Como el objetivo es ver qué análisis hace la herramienta y cómo lo hace, he omitido los pasos de la instalación, la carga de los datos y la conversión, aunque es un paso importante porque se debe hacer en `R`, tras descargar los datos de la WoS o Scopus, que también tiene su técnica. Tras indagar bastante logré dar con una manera de fusionar ambas bases de datos y funciona perfectamente, además omite de forma automática las referencias duplicadas. **Con ese procedimiento podemos tener ambas BBDD en un solo archivo y aunque la WoS tiene más referencias, Scopus casi siempre suele alguna/s más y aunque sean pocas, al menos cubrimos prácticamente las dos fuentes de artículos más importantes**.
+
+```{r load bibliometrix, message=FALSE, include=FALSE}
+# Stable version from CRAN (Comprehensive R Archive Network)
+# if you need to execute the code, remove # from the beginning of the next line
+
+# install.packages("bibliometrix")
+
+
+# Most updated version from GitHub
+# if you need to execute the code, remove # from the beginning of the next lines
+
+# install.packages("devtools")
+# devtools::install_github("massimoaria/bibliometrix")
+
+library(bibliometrix)
+```
+
+
+```{r Data loading, warning=FALSE, include=FALSE}
+
+# Convertimos el fichero obtenido de WoS en un dataframe bibliográfico con R
+wos <- convert2df("wos.bib", dbsource = "wos", format = "bibtex")
+
+```
+
+# Sección 1: Análisis Descriptivo
+
+El análisis descriptivo del paquete proporciona bastante información sobre el desarrollo anual de la investigación, los "k" autores más productivos, los artículos, los países y las palabras clave más relevantes.
+
+## Principales hallazgos sobre la Base de Datos analizada
+
+En el siguiente cuadro aparece un resumen de los datos y otras clasificaciones bastante interesantes: nº de autores, nº de documentos, producción científica cada año (y su crecimiento medio), los autores más productivos, los países y las correspondientes citas, las revistas más relevantes, las palabras clave más relevantes, etc... 
+
+Además, esta información también la podemos obtener en gráficos.
+
+```{r Descriptive Analysis, echo=FALSE, comment=NA}
+#options(width=160)
+results <- biblioAnalysis(wos)
+summary(results, k=10, pause=F, width=130)
+plot(x=results, k=10, pause=F)
+```
+
+## Referencias más citadas
+
+En cuanto a las referencias más citadas también las podemos obtener, así como su número: 
+
+```{r Most cited references, echo=FALSE, comment=NA}
+CR <- citations(wos, field = "article", sep = ";")
+cbind(CR$Cited[1:20])
+```
+
+# Sección 2: La estructura del campo - Análisis de co-citas
+
+El análisis de citas es otra herramienta destacable del análisis bibliométrico que ofrece el paquete. Muestra la estructura de un campo específico a través de los vínculos entre nodos (por ejemplo, autores, artículos, revista). La opción interesante es que las aristas pueden ser interpretadas de manera diferente en función del tipo de red, es decir, co-citas, citas directas, acoplamiento bibliográfico, etc... Esto, viendo en profundidad el manual de uso del paquete para ver las diferentes opciones, se podría aprovechar bastante.
+
+A continuación he cogido los tres ejemplos estándar que muestran en la referencia original pero adaptado a nuestra base de datos.  
+
+Primero, una red de co-citas que muestra las relaciones entre las obras citadas-referidas (nodos).
+
+Segundo, una red de co-citas que utiliza las revistas citadas como unidad de análisis.
+
+Las dimensiones útiles para comentar las redes de co-citas son: **(i)** centralidad y perificidad de los nodos, **(ii)** su proximidad y distancia, **(iii)** fuerza de los vínculos, **(iv)** clusters, **(v)** contribuciones puente.
+
+En tercer lugar, una historiografía que se construye a partir de citas directas. Traza los vínculos intelectuales en un orden histórico. Los trabajos citados de miles de autores contenidos en una colección de artículos científicos publicados son suficientes para reconstruir la estructura historiográfica del campo, señalando los trabajos básicos qeu hay en él.
+
+## Análisis de co-citas de artículos (referencias)
+
+Este es el típico grafo del VosViewer, en este caso para una visualización de la red de co-citas. No he modificado los parámetros del gráfico para hacerlo más claro pero las **opciones del gráfico** que se muestran a continuación son, sobre todo, para el "fine tuning" de forma visual. Sin ver el código esto puede resultar inútil pero es interesante saber que se puede retocar y hacerlo más legible. Lo interesante sería poder eliminar aquélllas co-citas que aparecen aisladas y centrarse solo en las que hay relaciones.
+
+-   `n = 50` (la función traza las principales 50 referencias citadas)
+
+-   `type = "fruchterman"` (el trazado de la red se genera mediante el algoritmo Fruchterman-Reingold, existe la opción de otros tipos de algoritmos aunque no las he trasteado y no sé si nos valdría a nosotros.)
+
+-   `size.cex = TRUE` (el tamaño de los vértices es proporcional a su grado)
+
+-   `size = 20` (tamaño máximo de los vértices)
+
+-   `remove.multiple = FALSE` (no se eliminan las aristas múltiples, lo contrario es `TRUE`)
+
+-   `labelsize = 1` (define el tamaño de las etiquetas de los vértices)
+
+-   `edgesize = 10` (El grosor de las aristas es proporcional a su fuerza. `Edgesize` define el valor máximo del grosor)
+
+-   `edges.min = 5` (sólo traza las aristas con una fuerza mayor o igual a 5)
+
+-   todos los demás argumentos asumen los valores por defecto.
+
+```{r Co-citation network, echo=FALSE, fig.height=10, fig.width=10, comment=NA}
+NetMatrix <- biblioNetwork(wos, analysis = "co-citation", network = "references", sep = ";")
+net=networkPlot(NetMatrix, n = 50, Title = "Co-Citation Network", type = "fruchterman", size.cex = TRUE, size = 20, remove.multiple = FALSE, labelsize = 1, edgesize = 10, edges.min = 5)
+```
+
+
+```{r Co-citation net stat, eval=FALSE, comment=NA, include=FALSE}
+# El cuadro resumen Análisis descriptivo de las características de la red de citación de artículos
+# netstat <- networkStat(NetMatrix)
+#summary(netstat,k=10)
+```
+
+## Análisis de co-citas de revistas (fuente)
+
+```{r Co-citation source network, comment=NA, fig.height=10, fig.width=10}
+wos=metaTagExtraction(wos,"CR_SO",sep=";")
+NetMatrix <- biblioNetwork(wos, analysis = "co-citation", network = "sources", sep = ";")
+net=networkPlot(NetMatrix, n = 50, Title = "Co-Citation Network", type = "auto", size.cex=TRUE, size=15, remove.multiple=FALSE, labelsize=1,edgesize = 10, edges.min=5)
+```
+
+Análisis descriptivo de las características de la red de citas de revistas
+
+Este análisis es similar al anterior pero con las citas de las revistas.
+
+```{r So Co-citation net stat, echo=FALSE, comment=NA}
+netstat <- networkStat(NetMatrix)
+summary(netstat,k=10)
+```
+
+# Sección 3: Historiografía - Vínculos de citación directa
+
+Este análisis nos proporciona los vínculos de citas directas por autor y año, lo cual es interesante para ver quién cita a quién y cuándo.
+
+```{r Direct citation network, echo=FALSE, fig.height=10, fig.width=10}
+histResults <- histNetwork(wos, sep = ";")
+
+```
+
+```{r Historiograph, echo=FALSE, fig.height=7, fig.width=10, comment=NA}
+options(width = 130)
+net <- histPlot(histResults, n=20, size = 5, labelsize = 4)
+```
+
+# Sección 4: La estructura conceptual - Análisis de co-palabras
+
+Las redes de co-palabras muestran la estructura conceptual, que descubre los vínculos entre los conceptos a través de las co-ocurrencias de términos.
+
+La estructura conceptual puede utilizar para comprender los temas que se tratan (frente de investigación) e identificar cuáles son los temas más importantes y más recientes.
+
+La herramienta divide todo el lapso de tiempo en diferentes periodos y compara las estructuras conceptuales lo cual es útil para analizar la evolución de los temas a lo largo del tiempo.
+
+El paquete es capaz de analizar las palabras clave, pero también los términos de los títulos y resúmenes de los artículos. Lo hace mediante el análisis de redes o el análisis de correspondencias (CA) o el análisis de correspondencias múltiples (MCA). El CA y el MCA visualizan la estructura conceptual en un gráfico bidimensional, que también lo muestro más abajo.
+
+## Análisis de palabras conjuntas mediante co-ocurrencias de palabras clave
+
+Al igual que el grafo anterio, las **opciones** son para hacer más legible el grafo:
+
+-   `normalize = "association"` (the vertex similarities are normalized using association strengthlas similitudes de los vértices se normalizan utilizando la fuerza de asociación)
+
+-   `n = 50` (La función traza las 50 principales referencias citadas)
+
+-   `type = "fruchterman"` (El trazado de la red se genera utilizando el algoritmo Fruchterman-Reingold)
+
+-   `size.cex = TRUE` (El tamaño de los vértices es proporcional a su grado)
+
+-   `size = 20` (El tamaño máximo de los vértices)
+
+-   `remove.multiple = FALSE` (No se eliminan las aristas múltiples)
+
+-   `labelsize = 3` (Define el tamaño máximo de las etiquetas de los vértices)
+
+-   `label.cex = TRUE` (El tamaño de las etiquetas de los vértices es proporcional a su grado)
+
+-   `edgesize = 10` (El grosor de las aristas es proporcional a su grado. `Edgesize` define el valor máximo del grosor)
+
+-   `label.n = 30` (Las etiquetas se trazan sólo para los 30 vértices principales)
+
+-   `edges.min = 25` (Sólo traza las aristas con una fuerza mayor o igual a 2)
+
+-   todos los demás argumentos asumen los valores por defecto
+
+```{r Keyword co-occurrences, comment=NA, fig.height=10, fig.width=10}
+NetMatrix <- biblioNetwork(wos, analysis = "co-occurrences", network = "keywords", sep = ";")
+net=networkPlot(NetMatrix, normalize="association", n = 50, Title = "Keyword Co-occurrences", type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=F, edgesize = 10, labelsize=5,label.cex=TRUE,label.n=30,edges.min=2)
+```
+
+
+```{r Keyword net stat, eval=FALSE, comment=NA, include=FALSE}
+# Descriptive analysis of keyword co-occurrences network characteristics
+# netstat <- networkStat(NetMatrix)
+# summary(netstat,k=10)
+```
+
+## Análisis de palabras conjuntas mediante el análisis de correspondencias
+
+```{r Co-word Analysis, fig.height=10, fig.width=10}
+suppressWarnings(
+CS <- conceptualStructure(wos, method="MCA", field="ID", minDegree=15, clust=5, stemming=FALSE, labelsize=15,documents=20)
+)
+```
+
+# Sección 5: Mapas Temáticos
+
+El análisis de co-palabras dibuja clusters de las palabras clave. Se consideran temas, cuya densidad y centralidad pueden utilizarse para clasificar los temas y trazar un diagrama bidimensional.
+
+El mapa temático es un diagrama muy intuitivo y podemos analizar los temas según el cuadrante en el que se sitúan: *(1)* cuadrante superior derecho: **temas motores** (según los califican los autores de la herramienta); *(2)* cuadrante inferior derecho: **temas básicos**; *(3)* cuadrante inferior izquierdo: **temas emergentes o que desaparecen**; *(4)* cuadrante superior izquierdo: **temas muy especializados/nicho**.
+
+```{r ThematicMap, echo=TRUE, fig.height=9, fig.width=9}
+
+Map=thematicMap(wos, field = "ID", n = 250, minfreq = 4,
+  stemming = FALSE, size = 0.7, n.labels=5, repel = TRUE)
+plot(Map$map)
+```
+
+A continuación se puede pedir al programa la descripción del clúster
+
+```{r}
+Clusters=Map$words[order(Map$words$Cluster,-Map$words$Occurrences),]
+library(dplyr)
+CL <- Clusters %>% group_by(.data$Cluster_Label) %>% top_n(5, .data$Occurrences)
+CL
+```
+
+# Sección 6: Estructura social - Análisis de la colaboración
+
+Esta última sección también puede ser interesante. Las redes de colaboración muestran cómo los autores, las instituciones (por ejemplo, universidades o departamentos) y los países se relacionan con otros en el campo que estemos analizando, en este caso de la neofilia/neofobia en el turismo. Por ejemplo, la primera figura de abajo es una "Red de co-autores". En ella se descubren los grupos de estudio regulares, los grupos ocultos de estudiosos y los autores fundamentales. La segunda figura se denomina "Red de colaboración Educativa" y descubre las instituciones relevantes en un campo de investigación específico y sus relaciones.
+
+## Red de colaboración entre autores
+
+```{r, Au collaboration network, fig.height=10, fig.width=10}
+NetMatrix <- biblioNetwork(wos, analysis = "collaboration",  network = "authors", sep = ";")
+net=networkPlot(NetMatrix,  n = 50, Title = "Author collaboration",type = "auto", size=10,size.cex=T,edgesize = 3,labelsize=1)
+```
+
+
+```{r Au coll stat, eval=FALSE, comment=NA, include=FALSE}
+# Análisis descriptivo de las características de la red de colaboración de los autores
+# netstat <- networkStat(NetMatrix)
+# summary(netstat,k=15)
+```
+
+## Red de colaboración educativa
+
+```{r, Edu collaboration network, fig.height=10, fig.width=10}
+NetMatrix <- biblioNetwork(wos, analysis = "collaboration",  network = "universities", sep = ";")
+net=networkPlot(NetMatrix,  n = 50, Title = "Edu collaboration",type = "auto", size=4,size.cex=F,edgesize = 3,labelsize=1)
+```
+
+```{r Edu coll stat, eval=FALSE, comment=NA, include=FALSE}
+# Análisis descriptivo de las características de la red de colaboración educativa
+# netstat <- networkStat(NetMatrix)
+# summary(netstat,k=15)
+```
+
+## Red de colaboración entre países
+
+Finalmente, también podemos obtener un grafo de la red de colaboración entre países, lo cual puede ser útil para ver entre qué países hay más colaboración en el tema en cuestión. Por ejemplo, se puede ver que el país que más relaciones tiene es el Reino Unido. España, por su parte establece colaboraciones con Japón, Sudáfrica, Indonesia, Alemania y China. 
+
+```{r, Co collaboration network, fig.height=10, fig.width=10}
+wos <- metaTagExtraction(wos, Field = "AU_CO", sep = ";")
+NetMatrix <- biblioNetwork(wos, analysis = "collaboration",  network = "countries", sep = ";")
+net=networkPlot(NetMatrix,  n = dim(NetMatrix)[1], Title = "Country collaboration",type = "circle", size=10,size.cex=T,edgesize = 1,labelsize=0.6, cluster="none")
+```
+
+```{r Co coll stat, eval=FALSE, comment=NA, include=FALSE}
+#Análisis descriptivo de las características de las redes de colaboración de los países
+#netstat <- networkStat(NetMatrix)
+#summary(netstat,k=15)
+```
+
+# Comentario Final 
+
+Aparte de esta librería que, como digo, se trabaja en ´R´, los autores han creado una aplicación que hace lo mismo sin necesidad de programar, incluso creo que hay alguna herramienta adicional más, también útil. Lo único que hace falta es tener la BBDD en el formato correcto (fusionada WoS y Scopus, si se quiere, etc...) porque de lo contrario, no la lee pero si se hace bien, el resultado es el mismo que habéis visto pero sin "tocar" `R` prácticamente (solo para transformar los archivos). Eso lo vemos cuando nos juntemos.
