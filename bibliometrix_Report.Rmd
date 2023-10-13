@@ -305,4 +305,4 @@ net=networkPlot(NetMatrix,  n = dim(NetMatrix)[1], Title = "Country collaboratio
 
 # Comentario Final 
 
-Aparte de esta librería que, como digo, se trabaja en ´R´, los autores han creado una aplicación que hace lo mismo sin necesidad de programar, incluso creo que hay alguna herramienta adicional más, también útil. Lo único que hace falta es tener la BBDD en el formato correcto (fusionada WoS y Scopus, si se quiere, etc...) porque de lo contrario, no la lee pero si se hace bien, el resultado es el mismo que habéis visto pero sin "tocar" `R` prácticamente (solo para transformar los archivos).
+Aparte de esta librería que, como hemos dicho, se trabaja en ´R´, los autores han creado una aplicación que hace lo mismo sin necesidad de programar, incluso hay alguna herramienta adicional más, también útil. Lo único que hace falta es tener la BBDD en el formato correcto (fusionada WoS y Scopus, si se quiere, etc...) porque de lo contrario, no la lee pero si se hace bien, el resultado es el mismo que se ha visto pero sin "tocar" `R` prácticamente (solo para transformar los archivos).
