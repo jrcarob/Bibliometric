@@ -29,7 +29,7 @@ Aria, M., & Cuccurullo, C. (2017). **bibliometrix: An R-tool for comprehensive s
 
 # Datos Bibliográficos
 
-Los datos bibliográficos son los de la cadena de búsqueda que he hecho. De momento me he centrado en una de las líneas que cogí, la **neofilia/neofobia en el turismo**. Lógicamente se aplicaría a las otras líneas; sin embargo hay un pequeño error. La base de datos la filtré y redefiní quitando áreas que no eran de nuestro interés: zoología, biología, etc..., dado que también hay neofilia y neofobia, sobre todo ésta última, en los animales, pues bien, algún área se me ha debido colar porque he visto revistas y referencias no relacionadas con el turismo, por eso lo advierto aquí, para cuando veais alguna referencia que no os cuadra. 
+Los datos bibliográficos son los de la cadena de búsqueda que se hecho. De momento nos hemos centrado en una de las líneas del G.I., la **neofilia/neofobia en el turismo**. Lógicamente se aplicaría a las otras líneas; sin embargo, cuidado a la hora de filtrar y redefinir la base de datos ya que hay que quitar áreas que no sean de nuestro interés, por ejemplo, en nuestra selección había referencias de zoología, biología, etc..., dado que también hay neofilia y neofobia, sobre todo ésta última, concretamente en los animales, pues bien, hay que ser cuidadosos porque algún área se puede colar en la forma de revistas y referencias no relacionadas con nuestra área de investigación. 
 
 **Fuente de los datos**: Clarivate Analytics Web of Science (<http://apps.webofknowledge.com>)
 
@@ -45,7 +45,7 @@ Los datos bibliográficos son los de la cadena de búsqueda que he hecho. De mom
 
 # Instalación del paquete, carga de los datos y conversión
 
-Como el objetivo es ver qué análisis hace la herramienta y cómo lo hace, he omitido los pasos de la instalación, la carga de los datos y la conversión, aunque es un paso importante porque se debe hacer en `R`, tras descargar los datos de la WoS o Scopus, que también tiene su técnica. Tras indagar bastante logré dar con una manera de fusionar ambas bases de datos y funciona perfectamente, además omite de forma automática las referencias duplicadas. **Con ese procedimiento podemos tener ambas BBDD en un solo archivo y aunque la WoS tiene más referencias, Scopus casi siempre suele alguna/s más y aunque sean pocas, al menos cubrimos prácticamente las dos fuentes de artículos más importantes**.
+Como el objetivo es ver qué análisis hace la herramienta y cómo lo hace, se han omitido los pasos de la instalación, la carga de los datos y la conversión, aunque es un paso importante ya que se debe hacer en `R`, tras descargar los datos de la WoS o Scopus, que también tiene su técnica. Tras indagar bastante se logró dar con una manera de fusionar ambas bases de datos y funciona perfectamente, además omite de forma automática las referencias duplicadas. **Con ese procedimiento podemos tener ambas BBDD en un solo archivo y aunque WoS tiene más referencias (por regla general, aunque no siempre), Scopus casi siempre suele alguna/s diferente/s y aunque sean pocas, al menos cubrimos prácticamente las dos fuentes de artículos más importantes**. Mencionar que en las últimas actualizaciones de este paquete `Bibliometrix` se han incluido otras BBDD bibliográficas de caracter abierto tales como OpenAlex, Dimensions, Lens, y del ámbito médico como PubMed y Cochrane.
 
 ```{r load bibliometrix, message=FALSE, include=FALSE}
 # Stable version from CRAN (Comprehensive R Archive Network)
@@ -99,9 +99,9 @@ cbind(CR$Cited[1:20])
 
 # Sección 2: La estructura del campo - Análisis de co-citas
 
-El análisis de citas es otra herramienta destacable del análisis bibliométrico que ofrece el paquete. Muestra la estructura de un campo específico a través de los vínculos entre nodos (por ejemplo, autores, artículos, revista). La opción interesante es que las aristas pueden ser interpretadas de manera diferente en función del tipo de red, es decir, co-citas, citas directas, acoplamiento bibliográfico, etc... Esto, viendo en profundidad el manual de uso del paquete para ver las diferentes opciones, se podría aprovechar bastante.
+El análisis de citas es otra herramienta destacable del análisis bibliométrico que ofrece el paquete. Muestra la estructura de un campo específico a través de los vínculos entre nodos (por ejemplo, autores, artículos, revista). La opción interesante es que las aristas pueden ser interpretadas de manera diferente en función del tipo de red, es decir, co-citas, citas directas, acoplamiento bibliográfico, etc... Esto, viendo en profundidad el manual de uso del paquete para ver las diferentes opciones, es muy útil y se puede aprovechar bastante.
 
-A continuación he cogido los tres ejemplos estándar que muestran en la referencia original pero adaptado a nuestra base de datos.  
+A continuación se han cogido los tres ejemplos estándar que muestran en la referencia original pero adaptándolo a nuestra base de datos.  
 
 Primero, una red de co-citas que muestra las relaciones entre las obras citadas-referidas (nodos).
 
@@ -113,7 +113,7 @@ En tercer lugar, una historiografía que se construye a partir de citas directas
 
 ## Análisis de co-citas de artículos (referencias)
 
-Este es el típico grafo del VosViewer, en este caso para una visualización de la red de co-citas. No he modificado los parámetros del gráfico para hacerlo más claro pero las **opciones del gráfico** que se muestran a continuación son, sobre todo, para el "fine tuning" de forma visual. Sin ver el código esto puede resultar inútil pero es interesante saber que se puede retocar y hacerlo más legible. Lo interesante sería poder eliminar aquélllas co-citas que aparecen aisladas y centrarse solo en las que hay relaciones.
+Este es el típico grafo del VosViewer, en este caso para una visualización de la red de co-citas. No se han modificado los parámetros del gráfico para hacerlo más claro pero las **opciones del gráfico** que se muestran a continuación son, sobre todo, para el "fine tuning" de forma visual. Sin ver el código esto puede resultar inútil pero es interesante saber que se puede retocar y hacerlo más legible. Lo interesante sería poder eliminar aquélllas co-citas que aparecen aisladas y centrarse solo en las que hay relaciones.
 
 -   `n = 50` (la función traza las principales 50 referencias citadas)
 
@@ -258,7 +258,7 @@ CL
 
 # Sección 6: Estructura social - Análisis de la colaboración
 
-Esta última sección también puede ser interesante. Las redes de colaboración muestran cómo los autores, las instituciones (por ejemplo, universidades o departamentos) y los países se relacionan con otros en el campo que estemos analizando, en este caso de la neofilia/neofobia en el turismo. Por ejemplo, la primera figura de abajo es una "Red de co-autores". En ella se descubren los grupos de estudio regulares, los grupos ocultos de estudiosos y los autores fundamentales. La segunda figura se denomina "Red de colaboración Educativa" y descubre las instituciones relevantes en un campo de investigación específico y sus relaciones.
+Esta última sección también es interesante. Las redes de colaboración muestran cómo los autores, las instituciones (por ejemplo, universidades o departamentos) y los países se relacionan con otros en el campo que estemos analizando, en este caso de la neofilia/neofobia en el turismo. Por ejemplo, la primera figura de abajo es una "Red de co-autores". En ella se descubren los grupos de estudio regulares, los grupos ocultos de estudiosos y los autores fundamentales. La segunda figura se denomina "Red de colaboración Educativa" y descubre las instituciones relevantes en un campo de investigación específico y sus relaciones.
 
 ## Red de colaboración entre autores
 
@@ -305,4 +305,4 @@ net=networkPlot(NetMatrix,  n = dim(NetMatrix)[1], Title = "Country collaboratio
 
 # Comentario Final 
 
-Aparte de esta librería que, como digo, se trabaja en ´R´, los autores han creado una aplicación que hace lo mismo sin necesidad de programar, incluso creo que hay alguna herramienta adicional más, también útil. Lo único que hace falta es tener la BBDD en el formato correcto (fusionada WoS y Scopus, si se quiere, etc...) porque de lo contrario, no la lee pero si se hace bien, el resultado es el mismo que habéis visto pero sin "tocar" `R` prácticamente (solo para transformar los archivos). Eso lo vemos cuando nos juntemos.
+Aparte de esta librería que se trabaja en ´R´, los autores han creado una aplicación que hace lo mismo sin necesidad de programar, incluso hay alguna herramienta adicional más, también útil. Lo único que hace falta es tener la BBDD en el formato correcto (fusionada WoS y Scopus, si se quiere, etc...) porque de lo contrario, no la lee pero si se hace bien, el resultado es el mismo que hemos mostrado aquí pero sin programar `R` prácticamente (solo para transformar los archivos).
