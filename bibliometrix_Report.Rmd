@@ -29,7 +29,7 @@ Aria, M., & Cuccurullo, C. (2017). **bibliometrix: An R-tool for comprehensive s
 
 # Datos Bibliográficos
 
-Los datos bibliográficos son los de la cadena de búsqueda que se hecho. De momento nos hemos centrado en una de las líneas del G.I., la **neofilia/neofobia en el turismo**. Lógicamente se aplicaría a las otras líneas; sin embargo, cuidado a la hora de filtrar y redefinir la base de datos ya que hay que quitar áreas que no sean de nuestro interés, por ejemplo, en nuestra selección había referencias de zoología, biología, etc..., dado que también hay neofilia y neofobia, sobre todo ésta última, concretamente en los animales, pues bien, hay que ser cuidadosos porque algún área se puede colar en la forma de revistas y referencias no relacionadas con nuestra área de investigación. 
+Los datos bibliográficos son los de la cadena de búsqueda que se ha hecho. De momento nos hemos centrado en una de las líneas del G.I., la **neofilia/neofobia en el turismo**. Lógicamente se aplicaría a las otras líneas; sin embargo, cuidado a la hora de filtrar y redefinir la base de datos ya que hay que quitar áreas que no sean de nuestro interés, por ejemplo, en nuestra selección había referencias de zoología, biología, etc..., dado que también hay neofilia y neofobia, sobre todo ésta última, concretamente en los animales, pues bien, hay que ser cuidadosos porque algún área se puede colar en la forma de revistas y referencias no relacionadas con nuestra área de investigación. 
 
 **Fuente de los datos**: Clarivate Analytics Web of Science (<http://apps.webofknowledge.com>)
 
