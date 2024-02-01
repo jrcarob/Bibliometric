@@ -1,6 +1,6 @@
 ---
 title: "Ejemplo de Análisis de Mapas Científicos con el paquete R `bibliometrix` "
-author: © J. R. Caro-Barrera (Grupo de Investigación SEJ670, Universidad de Córdoba)
+author: © J. R. Caro-Barrera (Grupo de Investigación SEJ670, Universidad de Córdoba) [![DOI](https://zenodo.org/badge/543571913.svg)](https://zenodo.org/doi/10.5281/zenodo.10601504)
 date: September 29, 2022
 output:
   html_document:
